@@ -16,8 +16,6 @@ class SSK():
     def kb(self, s, t, n):
         x = s[-1]
         #del s[-1]
-        if s == "cat" and t == "cat":
-            pass
         u_len = 0
         if n == 0:
             return 1
@@ -26,7 +24,7 @@ class SSK():
         
         if x == t[-1]:
             #del t[-1]
-            kb_res = self.l * (self.kb(s, t[:-1], n) + self.l * self.kp(s,t[:-1],n-1) )
+            kb_res = self.l * (self.kb(s, t[:-1], n) + self.l * self.kp(s[:-1],t[:-1],n-1) )
             return kb_res
         
         
@@ -36,7 +34,7 @@ class SSK():
                     u_len = letter_index
                     break
             #del t[u_len:]
-            kb_res = np.power(self.l,u_len+1)*self.kb(s, t[:u_len],n)
+            kb_res = np.power(self.l,u_len+1)*self.kb(s, t[:u_len-1],n)
             return kb_res
 
                 
