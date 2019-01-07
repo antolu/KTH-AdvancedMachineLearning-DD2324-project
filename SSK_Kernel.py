@@ -26,7 +26,7 @@ class SSK():
         
         if x == t[-1]:
             #del t[-1]
-            kb_res = self.l * (self.kb(s, t[:-1], n) + self.l * self.kp(s,t[:-1],n-1) )
+            kb_res = self.l * (self.kb(s, t[:-1], n) + self.l * self.kp(s[:-1],t[:-1],n-1) )
             return kb_res
         
         
