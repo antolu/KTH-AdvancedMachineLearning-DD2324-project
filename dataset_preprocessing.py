@@ -66,6 +66,36 @@ def trim(s) :
 
     return st
 
+def preprocess(docs) :
+    """
+    Preprocesses a dataset of documents
+
+    Parameters
+    ----------
+    docs : dict
+        Dictionary of documents, accessed like docs["train"]["corn"][i]
+
+    Returns
+    -------
+    A dictionary with trimmed documents
+    """
+
+    trimmed = {}
+
+    for set_ in DATA_SPLIT :
+        trimmed[set_] = {}
+
+        for cat in CATEGORIES :
+            l = list()
+
+            untrimmed = docs[set_][cat]
+
+            for d in untrimmed :
+                l.append(trim(d))
+
+            trimmed[set_][cat] = l
+
+    return trimmed
 
 def load_data() : 
     """
