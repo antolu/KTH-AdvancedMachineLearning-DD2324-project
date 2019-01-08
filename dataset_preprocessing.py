@@ -94,7 +94,7 @@ def preprocess(docs) :
 
     return trimmed
 
-def load_data() : 
+def load_raw_data() : 
     """
     Read reuters dataset into memory
     """
