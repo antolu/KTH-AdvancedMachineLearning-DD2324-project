@@ -59,12 +59,9 @@ def trim(s) :
 
     filtered_sentence = [w for w in tokens if not w in stop_words]
 
-    st = ""
+    ret_str = " ".join(filtered_sentence)
 
-    for tkn in filtered_sentence :
-        st += tkn + " "
-
-    return st
+    return ret_str
 
 def preprocess(docs) :
     """
