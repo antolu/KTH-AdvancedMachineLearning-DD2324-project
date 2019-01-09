@@ -1,7 +1,10 @@
 import numpy as np
 import math as m
-from sklearn.feature_extraction.text import TfidfVectorizer
+from collections import Counter
 from scipy.sparse import csr_matrix
+import re
+
+regex = re.compile(r"*\s")
 
 def ngk(doc1, doc2, n) : 
     """
@@ -22,21 +25,34 @@ def ngk(doc1, doc2, n) :
     A kernel entry
     """
 
-    vectorizer = TfidfVectorizer(
-                                input='content', 
-                                norm="l2", tokenizer=None, 
-                                preprocessor=None, 
-                                analyzer='char', 
-                                ngram_range=(n, n)
-                                )
+    # Remove whitespace in string
+    # doc1 = regex.sub("", doc1)
+    # doc2 = regex.sub("", doc2)
 
-    s = vectorizer.fit_transform([doc1, doc2])
+    # Extract all the n-grams
+    ngrams1 = list()
+    for i in range(len(doc1)-n) :
+        ngrams1.append(doc1[i:i+n])
+    ngrams2 = list()
+    for i in range(len(doc2)-n) :
+        ngrams2.append(doc2[i:i+n])
 
-    # Value of the kernel
-    val = s[0].dot(s[1].T)
+    # Count n-grams
+    ngram1_count = Counter(ngrams1)
+    ngram2_count = Counter(ngrams2)
 
-    # Return normalized kernel entry
-    return val[0,0]
+    # Find shared ngrams
+    shared_ngrams = set(ngram1_count.keys()).intersection(set(ngram2_count.keys()))
+
+    # Count occurrence of shared n-grams
+    shared_ngrams_sum = sum([ngram1_count[ngram] * ngram2_count[ngram] for ngram in shared_ngrams])
+
+    norm1 = np.linalg.norm(np.asarray(list(ngram1_count)))
+    norm2 = np.linalg.norm(np.asarray(list(ngram2_count)))
+
+    similarity = shared_ngrams_sum / m.sqrt(norm1 * norm2)
+
+    return similarity
 
 def compute_matrix(documents, kernel='ngk', n=2) :
     """
