@@ -97,6 +97,11 @@ def preprocess(docs) :
 def load_raw_data() : 
     """
     Read reuters dataset into memory
+
+    Returns
+    -------
+    A dictionary of all documents (in raw form)
+    Indexed by return_var{"train":{"earn":list(docs)}}
     """
     datasets = {}
 

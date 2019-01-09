@@ -30,6 +30,21 @@ def save_data(docs) :
                 pickle.dump(data, handle)
 
 def load_data(set_, category) :
+    """
+    Loads dataset from pickle files into memory.
+
+    Parameters
+    ----------
+    set_ : string
+        "train" or "test"
+    category : string
+        "earn", "acq", "crude" or "corn"
+
+    Returns
+    ------
+    A list of strings (the docs) of the given set and category
+    """
+
     if set_ not in DATA_SPLIT :
         raise Exception(set_ + " is not a valid set.")
     if category not in CATEGORIES :
