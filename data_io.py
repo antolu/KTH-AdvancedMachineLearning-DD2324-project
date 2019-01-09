@@ -1,15 +1,8 @@
 import pickle
+from constants import *
+
 
 data_path = "data/"
-
-EARN = "earn"
-ACQ = "acq"
-CRUDE = "crude"
-CORN = "corn"
-TRAIN = "train"
-TEST = "test"
-CATEGORIES = [EARN, ACQ, CRUDE, CORN]
-DATA_SPLIT = [TRAIN, TEST]
 
 def save_data(docs) :
     """

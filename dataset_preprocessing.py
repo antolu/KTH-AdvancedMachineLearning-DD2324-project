@@ -2,39 +2,12 @@ import nltk
 from nltk.corpus import stopwords, reuters
 from nltk.tokenize import word_tokenize
 import re
+from constants import *
 
 stop_words = set(stopwords.words("english"))
 stop_words.update([".", ",", ">"])
 reg = re.compile(r"&lt;")
 regg = re.compile(r"'")
-
-EARN = "earn"
-ACQ = "acq"
-CRUDE = "crude"
-CORN = "corn"
-TRAIN = "train"
-TEST = "test"
-
-CATEGORIES = [EARN, ACQ, CRUDE, CORN]
-DATA_SPLIT = [TRAIN, TEST]
-
-NORM_DOC_LENGTH = 250
-MIN_DOC_LENGTH = 500
-
-SPLIT_SIZES = {
-    TRAIN:{
-        EARN:154, 
-        ACQ:114,
-        CRUDE:76,
-        CORN:38
-    },
-    TEST:{
-        EARN:40, 
-        ACQ:25,
-        CRUDE:15,
-        CORN:10
-    }
-}
 
 def trim(s) :
     """
