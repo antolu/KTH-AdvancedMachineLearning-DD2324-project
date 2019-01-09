@@ -18,6 +18,9 @@ TEST = "test"
 CATEGORIES = [EARN, ACQ, CRUDE, CORN]
 DATA_SPLIT = [TRAIN, TEST]
 
+NORM_DOC_LENGTH = 250
+MIN_DOC_LENGTH = 500
+
 SPLIT_SIZES = {
     TRAIN:{
         EARN:154, 
@@ -63,7 +66,7 @@ def trim(s) :
 
     return ret_str
 
-def preprocess(docs) :
+def preprocess(docs, normalize=False) :
     """
     Preprocesses a dataset of documents
 
@@ -88,7 +91,12 @@ def preprocess(docs) :
             untrimmed = docs[set_][cat]
 
             for d in untrimmed :
-                l.append(trim(d))
+                s = trim(d)
+                if normalize :
+                    if len(s) < NORM_DOC_LENGTH :
+                        raise Exception("Document is too short: " + set_ + " " + cat + ". Length: " + str(len(s)))
+                    s = s[:NORM_DOC_LENGTH]
+                l.append(s)
 
             trimmed[set_][cat] = l
 
@@ -112,8 +120,12 @@ def load_raw_data() :
             l = list()
             docs = [reuters.raw(ID) for ID in reuters.fileids(cat) if set_ in ID]
 
-            for i in range(SPLIT_SIZES[set_][cat]) :
+            for i in range(len(docs)) :
+                if len(docs[i]) < MIN_DOC_LENGTH :
+                    continue
                 l.append(docs[i])
+                if len(l) >= SPLIT_SIZES[set_][cat] :
+                    break
 
             datasets[set_][cat] = l
 
