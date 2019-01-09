@@ -5,7 +5,7 @@ import re
 from constants import *
 
 stop_words = set(stopwords.words("english"))
-stop_words.update([".", ",", ">"])
+stop_words.update([".", ",", ">", ';', ':', '?', '!', '-', '--', "'", '(', ')', '[', ']'])
 reg = re.compile(r"&lt;")
 regg = re.compile(r"'")
 
