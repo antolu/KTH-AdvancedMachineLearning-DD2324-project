@@ -20,7 +20,7 @@ DATA_SPLIT = [TRAIN, TEST]
 
 SPLIT_SIZES = {
     TRAIN:{
-        EARN:153, 
+        EARN:154, 
         ACQ:114,
         CRUDE:76,
         CORN:38
