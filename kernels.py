@@ -2,9 +2,10 @@ import numpy as np
 import math as m
 from collections import Counter
 from scipy.sparse import csr_matrix
+from nltk.tokenize import word_tokenize
 import re
 
-regex = re.compile(r"*\s")
+regex = re.compile(r"\s")
 
 def ngk(doc1, doc2, n) : 
     """
@@ -47,12 +48,53 @@ def ngk(doc1, doc2, n) :
     # Count occurrence of shared n-grams
     shared_ngrams_sum = sum([ngram1_count[ngram] * ngram2_count[ngram] for ngram in shared_ngrams])
 
-    norm1 = np.linalg.norm(np.asarray(list(ngram1_count)))
-    norm2 = np.linalg.norm(np.asarray(list(ngram2_count)))
+    norm1 = np.linalg.norm(np.asarray(list(ngram1_count.values())))
+    norm2 = np.linalg.norm(np.asarray(list(ngram2_count.values())))
 
     similarity = shared_ngrams_sum / m.sqrt(norm1 * norm2)
 
     return similarity
+
+def wk(doc1, doc2, n) :
+    """
+    bag-of-words algorithm
+
+    Computes the bag-of-words features of given documents
+
+    Parameters
+    ----------
+    doc1 : str
+        The first document.
+    doc2 : str
+        The second document.
+    n : not used
+
+    Returns
+    -------
+    A kernel entry
+    """
+
+    # Extract all the n-grams
+    words1 = word_tokenize(doc1)
+    words2 = word_tokenize(doc2)
+
+    # Count n-grams
+    word1_count = Counter(words1)
+    word2_count = Counter(words2)
+
+    # Find shared ngrams
+    shared_words = set(word1_count.keys()).intersection(set(word2_count.keys()))
+
+    # Count occurrence of shared n-grams
+    shared_words_sum = sum([word1_count[word] * word2_count[word] for word in shared_words])
+
+    norm1 = np.linalg.norm(np.asarray(list(word1_count.values())))
+    norm2 = np.linalg.norm(np.asarray(list(word2_count.values())))
+
+    similarity = shared_words_sum / m.sqrt(norm1 * norm2)
+
+    return similarity
+
 
 def compute_matrix(documents, kernel='ngk', n=2) :
     """
@@ -73,8 +115,8 @@ def compute_matrix(documents, kernel='ngk', n=2) :
         kernel = ngk
     elif kernel == "ssk" :
         kernel = ngk
-    elif kernel == "bwk" :
-        kernel = ngk
+    elif kernel == "wk" :
+        kernel = wk
     else : 
         raise Exception("Kernel " + kernel + " is not a valid kernel")
 
@@ -97,4 +139,3 @@ def compute_matrix(documents, kernel='ngk', n=2) :
             kernel_matrix[n2, n1] = val
 
     return kernel_matrix
-
