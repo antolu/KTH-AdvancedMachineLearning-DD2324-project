@@ -3,8 +3,12 @@ import math as m
 from collections import Counter
 from scipy.sparse import csr_matrix
 import re
+from multiprocessing import Pool, cpu_count, Process, Array, sharedctypes
+from SSK_Kernel import SSK
+import pickle
+import ctypes
 
-regex = re.compile(r"*\s")
+#regex = re.compile(r"*\s")
 
 def ngk(doc1, doc2, n) : 
     """
@@ -86,8 +90,7 @@ def compute_matrix(documents, kernel='ngk', n=2) :
     N = len(documents)
 
     kernel_matrix = np.zeros((N, N))
-
-    for n1 in range(N) :
+    for n1 in range(N):
         for n2 in range(N) :
             if n2 < n1 :
                 continue
@@ -97,4 +100,70 @@ def compute_matrix(documents, kernel='ngk', n=2) :
             kernel_matrix[n2, n1] = val
 
     return kernel_matrix
+
+def call_kernel(i, j, n, documents, shared_array):
+    #print("hellll")
+    kernel = SSK(2, 0.2, 0.2, "h", "h")
+    #print("hello")
+    val = kernel.k(documents[i][:100], documents[j][:100], n)
+    shared_array[i][j] = val
+    shared_array[j][i] = val
+    #print(shared_array.value)
+    #print(val)
+    return val
+
+
+def parallel_matrix_compute(documents, kernel = ngk, n = 2):
+    #kernel = SSK(2, 0.2, 0.2,"test", "test")
+    
+    
+    
+    
+    
+    print("parallel")
+    N = len(documents)
+    global kernel_matrix
+    kernel_matrix = np.zeros((N, N))
+
+    shared_array = Array(ctypes.c_double, (N,N))
+
+    result = np.ctypeslib.as_ctypes(np.zeros((N, N)))
+    shared_array = sharedctypes.RawArray(result._type_, result)
+
+
+
+
+
+
+    print(shared_array)
+    doc_len = len(documents)
+
+    indecies = []
+    for i in range(doc_len):
+        for j in range(doc_len):
+            indecies.append((i,j,n, documents,shared_array, ))
+    print("for loop passed")
+
+    """pool = Pool(cpu_count()-1)
+    print((pool.map(call_kernel, indecies)))
+    pool.close()
+    pool.join()"""
+
+    #lock = Lock()
+
+    for num in indecies:
+        p = Process(target=call_kernel, args=num)
+        p.start()
+        p.join()
+
+    #f=open('ssk_matrix','w')
+    #pickle.dump(kernel_matrix, f)
+    #f.close()
+    res = np.ctypeslib.as_array(shared_array)
+    print(res)
+    np.save('kernel_matrix.npy', res)
+
+    
+
+
 

@@ -1,5 +1,6 @@
 """ Reimplementation of the SSK kernel described in Text Classification using String Kernels by Lodhi et al."""
 import numpy as np
+import time
 class SSK():
     """ SSK class to handle all properites of the SSK kernel"""
 
@@ -70,9 +71,13 @@ class SSK():
                     
 
 
-if __name__ == "__main__":
-    s = "cat"
-    t = "cat"
+#if __name__ == "__main__":
+def go(s, t, n): 
+    #s = "i stockholm hej jag heter gustav kjellberg jag kommer fran goteborg men bor i stockholm hej jag heter gustav kjellberg jag kommer"
+    #t = "i stockholm hej jag heter gustav kjellberg jag kommer fran goteborg men bor i stockholm hej jag heter gustav kjellberg jag kommer"
     
-    ssk = SSK(3, 0.2, 10, s, t)
-    print(ssk.k(s,t,2))
+    #ssk = SSK(3, 0.2, 10, s, t)
+    time1 = time.time()
+    #print(ssk.k(s,t,n))
+    time2 = time.time()
+    print ('%s function took %0.3f ms' % ("Compiling", (time2-time1)*1000.0))

@@ -99,3 +99,20 @@ ENV/
 
 # mypy
 .mypy_cache/
+
+#gcloud folder
+gcloud/*
+
+# pickle files
+*.pickle
+
+#Read me
+*.md
+
+#c files
+*.c
+
+#pyx files
+*.pyx
+
+ssk_matrix
