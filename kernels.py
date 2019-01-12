@@ -154,7 +154,7 @@ def parallel_matrix_compute(documents, kernel = ngk, n = 2):
     for num in indecies:
         p = Process(target=call_kernel, args=num)
         p.start()
-        p.join()
+    p.join()
 
     #f=open('ssk_matrix','w')
     #pickle.dump(kernel_matrix, f)
