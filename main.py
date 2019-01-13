@@ -4,7 +4,7 @@ from SSK_Kernel import SSK
 import kernels
 import constants
 import random
-
+import numpy as np
 
 def preprocessData():
     raw = dataset_preprocessing.load_raw_data()
@@ -22,19 +22,19 @@ if __name__ == "__main__":
     all_docs = []
     classes = []
 
-    data = data_io.load_data("train", "corn")
+    data = data_io.load_data("test", "corn")
     all_docs += data
     classes += ["corn"]*len(data)
 
-    data = data_io.load_data("train", "earn")
+    data = data_io.load_data("test", "earn")
     all_docs += data
     classes += ["earn"]*len(data)
 
-    data = data_io.load_data("train", "crude")
+    data = data_io.load_data("test", "crude")
     all_docs += data
     classes += ["crude"]*len(data)
 
-    data = data_io.load_data("train", "acq")
+    data = data_io.load_data("test", "acq")
     all_docs += data
     classes += ["acq"]*len(data)
 
@@ -44,4 +44,6 @@ if __name__ == "__main__":
 
     all_docs, classes = zip(*c)
 
-    kernels.parallel_matrix_compute(data)
+    np.save('classes.npy', classes)
+    
+    kernels.parallel_matrix_compute(all_docs)

@@ -105,7 +105,7 @@ def call_kernel(i, j, n, documents, shared_array):
     #print("hellll")
     kernel = SSK(2, 0.2, 0.2, "h", "h")
     #print("hello")
-    val = kernel.k(documents[i][:100], documents[j][:100], n)
+    val = kernel.k(documents[i], documents[j], n)
     shared_array[i][j] = val
     shared_array[j][i] = val
     #print(shared_array.value)
