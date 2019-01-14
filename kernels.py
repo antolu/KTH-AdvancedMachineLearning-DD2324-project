@@ -141,7 +141,6 @@ def compute_matrix(documents, kernel="ngk", n=2, x=100, l=0.2) :
 
     for n1 in range(N) :
         for n2 in range(N) :
-            print(str(n1) + str(n2))
             if n2 < n1 :
                 continue
             val = kernel(documents[n1], documents[n2], n)
@@ -150,8 +149,15 @@ def compute_matrix(documents, kernel="ngk", n=2, x=100, l=0.2) :
             kernel_matrix[n2, n1] = val
 
     # Normalize
-    # for n1 in range(N) : 
-    #     for n2 in range(N) :
-    #         kernel_matrix[n1, n2] = kernel_matrix[n1, n2] / m.sqrt(kernel_matrix[n1, n1] * kernel_matrix[n2, n2])
+    for n1 in range(N) : 
+        for n2 in range(N) :
+            if n2 <= n1 :
+                continue
+            kernel_matrix[n1, n2] = kernel_matrix[n1, n2] / m.sqrt(kernel_matrix[n1, n1] * kernel_matrix[n2, n2])
+            kernel_matrix[n2, n1] = kernel_matrix[n2, n1] / m.sqrt(kernel_matrix[n1, n1] * kernel_matrix[n2, n2])
+
+    # Normalize diagonal
+    for n in range(N) : 
+         kernel_matrix[n, n] =  kernel_matrix[n, n] /  kernel_matrix[n, n]
 
     return kernel_matrix
