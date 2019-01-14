@@ -7,15 +7,14 @@ from multiprocessing import Pool, cpu_count, Process, Array, sharedctypes
 from SSK_Kernel import SSK
 import pickle
 import ctypes
+import os
 
 #regex = re.compile(r"*\s")
 
 def ngk(doc1, doc2, n) : 
     """
     n-grams algorithm
-
     Computes the n-grams features of given documents
-
     Parameters
     ----------
     doc1 : str
@@ -23,7 +22,6 @@ def ngk(doc1, doc2, n) :
     doc2 : str
         The second document.
     n : The n in n-grams
-
     Returns
     -------
     A kernel entry
@@ -61,7 +59,6 @@ def ngk(doc1, doc2, n) :
 def compute_matrix(documents, kernel='ngk', n=2) :
     """
     Computes the kernel matrix of a list of documents.
-
     Parameters
     ----------
     documents : list() [string]
@@ -105,13 +102,19 @@ def call_kernel(i, j, n, documents, shared_array):
     #print("hellll")
     kernel = SSK(2, 0.2, 0.2, "h", "h")
     #print("hello")
-    val = kernel.k(documents[i], documents[j], n)
+    print(os.getpid())
+    print(len(documents[0]))
+    val = kernel.k(documents[0][i], documents[1][j], n)
     shared_array[i][j] = val
-    shared_array[j][i] = val
+    #shared_array[j][i] = val
     #print(shared_array.value)
-    #print(val)
+    print(os.getpid())
+    print(val)
+    
     return val
-
+def chunks(l, n):
+    for i in range(0, len(l), n):
+        yield l[i:i + n]
 
 def parallel_matrix_compute(documents, kernel = ngk, n = 2):
     #kernel = SSK(2, 0.2, 0.2,"test", "test")
@@ -121,13 +124,14 @@ def parallel_matrix_compute(documents, kernel = ngk, n = 2):
     
     
     print("parallel")
-    N = len(documents)
+    N1 = len(documents[0])
+    N2 = len(documents[1])
     global kernel_matrix
-    kernel_matrix = np.zeros((N, N))
+    kernel_matrix = np.zeros((N1, N2))
 
-    shared_array = Array(ctypes.c_double, (N,N))
+    shared_array = Array(ctypes.c_double, (N1,N2))
 
-    result = np.ctypeslib.as_ctypes(np.zeros((N, N)))
+    result = np.ctypeslib.as_ctypes(np.zeros((N1, N2)))
     shared_array = sharedctypes.RawArray(result._type_, result)
 
 
@@ -136,11 +140,11 @@ def parallel_matrix_compute(documents, kernel = ngk, n = 2):
 
 
     print(shared_array)
-    doc_len = len(documents)
+    doc_len = len(documents[0])
 
     indecies = []
     for i in range(doc_len):
-        for j in range(doc_len):
+        for j in range(N2):
             indecies.append((i,j,n, documents,shared_array, ))
     print("for loop passed")
 
@@ -150,11 +154,20 @@ def parallel_matrix_compute(documents, kernel = ngk, n = 2):
     pool.join()"""
 
     #lock = Lock()
-
+    ps = []
+    #print(cpu_count()-1)
     for num in indecies:
-        p = Process(target=call_kernel, args=num)
-        p.start()
-    p.join()
+        ps.append(Process(target=call_kernel, args=num))
+        
+    #for i in chunks(ps,14):
+    for i in chunks(ps, cpu_count()-1):
+        for p in i:
+            p.start()
+        for p in i:
+            p.join()
+            p.terminate()
+    #for p in ps:
+     #   p.join()
 
     #f=open('ssk_matrix','w')
     #pickle.dump(kernel_matrix, f)
@@ -162,8 +175,3 @@ def parallel_matrix_compute(documents, kernel = ngk, n = 2):
     res = np.ctypeslib.as_array(shared_array)
     print(res)
     np.save('kernel_matrix.npy', res)
-
-    
-
-
-

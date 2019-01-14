@@ -45,5 +45,5 @@ def load_data(set_, category) :
 
     with open(data_path + set_ + "_" + category + ".pickle", "rb") as handle :
         docs = pickle.load(handle)
-
+    handle.close()
     return docs

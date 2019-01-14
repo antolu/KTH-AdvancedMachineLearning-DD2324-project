@@ -1,6 +1,8 @@
 """ Reimplementation of the SSK kernel described in Text Classification using String Kernels by Lodhi et al."""
 import numpy as np
 import time
+import sys
+sys.setrecursionlimit(5000)
 class SSK():
     """ SSK class to handle all properites of the SSK kernel"""
 
@@ -15,28 +17,46 @@ class SSK():
 
     
     def kb(self, s, t, n):
-        x = s[-1]
-        #del s[-1]
-        u_len = 0
-        if n == 0:
-            return 1
-        if n > min(len(s), len(t)):
-            return 0
-        
-        if x == t[-1]:
-            #del t[-1]
-            kb_res = self.l * (self.kb(s, t[:-1], n) + self.l * self.kp(s[:-1],t[:-1],n-1) )
-            return kb_res
-        
-        
-        else:
-            for letter_index in range(len(t)-1, -1, -1):
-                if t[letter_index] == x:
-                    u_len = letter_index
-                    break
-            #del t[u_len:]
-            kb_res = np.power(self.l,u_len+1)*self.kb(s, t[:u_len-1],n)
-            return kb_res
+        try:
+            x = s[-1]
+            #del s[-1]
+            u_len = -2
+            if n == 0:
+                #print("\n\n\n\n ------------------------\n n = 0 \n ------------------ \n\n\n\n ")
+                return 1
+            if n > min(len(s), len(t)):
+                #print("\n\n\n\n ------------------------\n n bigger than s and t \n ------------------ \n\n\n\n ")
+                return 0
+            
+            if x == t[-1]:
+                #del t[-1]
+                kb_res = self.l * (self.kb(s, t[:-1], n) + self.l * self.kp(s[:-1],t[:-1],n-1) )
+                return kb_res
+            
+            
+            else:
+                #print("\n\n\n\n ------------------------\n inside first else \n ------------------ \n\n\n\n ")
+                for letter_index in range(len(t)-1, -1, -2):
+                    if t[letter_index] == x:
+                        u_len = letter_index
+                        break
+
+                if u_len == -2:
+                    #print("\n\n\n\n ------------------------\n u_len = -1 \n ------------------ \n\n\n\n ")
+                    return 0
+                """if u_len == 0:
+                    t_tmp = []
+                else:
+                    t_tmp = t[:u_len+1]2"""
+                lenU = len(t[u_len+1:])
+                #print('\n\n\n\n ------------------------\n u_len = ‰s \n ------------------ \n\n\n\n '% u_len+1)
+                kb_res = np.power(self.l,lenU)*self.kb(s, t[:u_len+1],n)
+                return kb_res
+        except RecursionError as re:
+            print('Sorry but this maze solver was not able to finish '
+                'analyzing the maze: {}'.format(re.args[0]))
+            print("s is = " +s)
+            print("t is = " +t)
 
                 
 
