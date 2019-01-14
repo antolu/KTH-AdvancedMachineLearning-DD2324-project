@@ -4,10 +4,7 @@
 #include <iomanip>
 
 double kb(std::string s, std::string t, const double & l, const int & n) {
-    std::cout << s << " " << t << std::endl;
     char x = s.back();
-
-    int u_len = 0;
 
     if (n == 0) 
         return 1;
@@ -19,27 +16,30 @@ double kb(std::string s, std::string t, const double & l, const int & n) {
 
     double kb_res = 0.0;
 
-    // std::cout << t.back() << std::endl;
-    if (x == t.back()) {
-        std::cout << s << t << n << std::endl;
-        kb_res = l * ( kb(s, t_new, l, n) + l * kp(s_new, t_new, l, n-1) );
-        // std::cout << kb_res << std::endl;
-        return kb_res;
-    }
-    for (int i = t.size()-1; i >= 0; i--) {
-        if (t[i] == x) {
-            u_len = i;
-            // std::cout << u_len << std::endl;
-            break;
+    if (s.back() == t.back()) {
+        kb_res = l * (kb(s, t.substr(0, t.size()-1), l, n) + l * kp(s.substr(0, s.size()-1), t.substr(0, t.size()-1), l, n-1));
+    } else {
+        int u_start = t.size() - 1;
+        std::string u = "";
+        while (u_start > 0) {
+            if (t[u_start] == x) {
+                break;
+            } else {
+                u += t[u_start];
+                u_start--;
+            }
         }
+        if (u_start == 0 && t[0] != x) {
+            return 0;
+        }
+
+        kb_res = pow(l, u.size()) * kb(s, t.substr(0, t.size() - u.size()), l, n);
     }
-    // std::cout << s << t << u_len << n << std::endl;
-    kb_res = pow(l, u_len+1) * kb(s, t.substr(0, u_len), l, n);
+
     return kb_res;
 }
 
 double kp(std::string s, std::string t, const double & l, const int & n) {
-    std::cout << s << " " << t << std::endl;
     if (n == 0) 
         return 1;
     if (n > std::min(s.size(), t.size()))
@@ -73,24 +73,29 @@ double ssk(std::string s, std::string t, const double & l, const int & n) {
     return k_res + kp_sum;
 }
 
-main(int argc, char const *argv[])
-{
-    std::string s = "i stockholm hej jag heter gustav kjellberg jag kommer fran goteborg men bor i stockholm hej jag heter gustav kjellberg jag kommer fran goteborg men bor i stockholm hej jag heter gustav kjellberg jag kommer fran goteborg men bor i stockholm";
-    std::string t = "i stockholm hej jag heter gustav kjellberg jag kommer fran goteborg men bor i stockholm hej jag heter gustav kjellberg jag kommer fran goteborg men bor i stockholm hej jag heter gustav kjellberg jag kommer fran goteborg men bor i stockholm";
-    // std::string s = "cat";
-    // std::string t = "cat";
-    double l = 0.2;
-    int n = 2;
+// main(int argc, char const *argv[])
+// {
+//     // std::string s = "i stockholm hej jag heter gustav kjellberg jag kommer fran goteborg men bor i stockholm hej jag heter gustav kjellberg jag kommer fran goteborg men bor i stockholm hej jag heter gustav kjellberg jag kommer fran goteborg men bor i stockholm";
+//     // std::string t = "i stockholm hej jag heter gustav kjellberg jag kommer fran goteborg men bor i stockholm hej jag heter gustav kjellberg jag kommer fran goteborg men bor i stockholm hej jag heter gustav kjellberg jag kommer fran goteborg men bor i stockholm";
+//     // std::string t = "here is different version of library being used than the one was used to build the python module";
+//     // std::string s = "science is organized knowledge";
+//     // std::string t = "wisdom is organized life";
+//     std::string s = "cat";
+//     std::string t = "cat";
+//     double l = 0.2;
+//     int n = 2;
 
-    auto start = std::chrono::high_resolution_clock::now();
-    double kern = ssk(s, t, l, n);
-    auto duration = std::chrono::high_resolution_clock::now() - start;
-
-    std::cout << std::setprecision(9) << kern << std::endl;
-    std::cout << std::chrono::duration_cast<std::chrono::microseconds>(duration).count() << " microseconds";
-    return 0;
-}
-
-// BOOST_PYTHON_MODULE(ssk) {
-//     boost::python::def("SSK", ssk);
+//     auto start = std::chrono::high_resolution_clock::now();
+//     double kern = ssk(s, t, l, n);
+//     double norm1 = ssk(s, s, l, n);
+//     double norm2 = ssk(t, t, l, n);
+//     auto duration = std::chrono::high_resolution_clock::now() - start;
+//     std::cout << std::setprecision(9) << kern << std::endl;
+//     std::cout << std::setprecision(9) << kern/sqrt(norm1*norm2) << std::endl;
+//     std::cout << std::chrono::duration_cast<std::chrono::microseconds>(duration).count() << " microseconds";
+//     return 0;
 // }
+
+BOOST_PYTHON_MODULE(ssk) {
+    boost::python::def("SSK", ssk);
+}
