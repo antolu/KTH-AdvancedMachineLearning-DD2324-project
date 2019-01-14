@@ -163,7 +163,7 @@ def compute_matrix(documents, kernel="ngk", n=2, x=100, l=0.2) :
     return kernel_matrix
 
 
-def compute_nonsym_matrix(doclist1, doclist2, kernel="ngk", n=3, x=100, l=0.2) :
+def compute_nonsym_matrix(doclist1, doclist2, kernel="ngk", n=2, x=100, l=0.2) :
     """
     Computes the kernel matrix of a list of documents.
 
@@ -200,7 +200,7 @@ def compute_nonsym_matrix(doclist1, doclist2, kernel="ngk", n=3, x=100, l=0.2) :
         raise Exception("n: " + str(n) + " is not a valid value for n.")
 
 
-    # Compute the actual matrix (symmetric)
+    # Compute the actual matrix (asymmetric)
     N1 = len(doclist1)
     N2 = len(doclist2)
     kernel_matrix = np.zeros((N1, N2))
@@ -209,15 +209,8 @@ def compute_nonsym_matrix(doclist1, doclist2, kernel="ngk", n=3, x=100, l=0.2) :
         for n2 in range(N2) :
 
             val = kernel(doclist1[n1], doclist2[n2], n)
-
-            kernel_matrix[n1, n2] = val
-
-
-    # Normalize
-    for n1 in range(N1) :
-        for n2 in range(N2) :
-            kernel_matrix[n1, n2] = kernel_matrix[n1, n2] / m.sqrt(kernel_matrix[n1, n1] * kernel_matrix[n2, n2])
-
+            #Normalize
+            kernel_matrix[n1, n2] = val / m.sqrt(kernel(doclist1[n1], doclist1[n1], n) * kernel(doclist2[n2], doclist2[n2], n))
 
 
     return kernel_matrix
