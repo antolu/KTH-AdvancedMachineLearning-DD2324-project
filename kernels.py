@@ -97,7 +97,6 @@ def wk(doc1, doc2, n) :
 
     return similarity
 
-
 def compute_matrix(documents, kernel="ngk", n=2, x=100, l=0.2) :
     """
     Computes the kernel matrix of a list of documents.

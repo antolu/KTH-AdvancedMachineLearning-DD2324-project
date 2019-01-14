@@ -115,5 +115,4 @@ gcloud/*
 #pyx files
 *.pyx
 
-ssk_matrixs
 ssk_matrix
