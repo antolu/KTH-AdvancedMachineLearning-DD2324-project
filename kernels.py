@@ -149,4 +149,9 @@ def compute_matrix(documents, kernel="ngk", n=2, x=100, l=0.2) :
             kernel_matrix[n1, n2] = val
             kernel_matrix[n2, n1] = val
 
+    # Normalize
+    for n1 in range(N) : 
+        for n2 in range(N) :
+            kernel_matrix[n1, n2] = kernel_matrix[n1, n2] / m.sqrt(kernel_matrix[n1, n1] * kernel_matrix[n2, n2])
+
     return kernel_matrix
