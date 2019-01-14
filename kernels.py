@@ -208,7 +208,7 @@ def compute_nonsym_matrix(doclist1, doclist2, kernel="ngk", n=3, x=100, l=0.2) :
     for n1 in range(N1) :
         for n2 in range(N2) :
 
-            val = kernel(documents[n1], documents[n2], n)
+            val = kernel(doclist1[n1], doclist2[n2], n)
 
             kernel_matrix[n1, n2] = val
 
