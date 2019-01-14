@@ -80,7 +80,7 @@ def count_occurrences(doc, n) :
     return cnt
     
 
-def ssk_ap(doc1, doc2, base, l, n, C) :
+def ssk_ap(doc1, doc2, base, l, n, C=1) :
     """
     An approximation of the SSK kernel
 
@@ -111,5 +111,5 @@ def ssk_ap(doc1, doc2, base, l, n, C) :
     for s in base :
         kernel += ssk.k(doc1, s, n) * ssk.k(doc2, s, n)
 
-    return kernel
+    return 1/C * kernel
 

@@ -86,7 +86,7 @@ def wk(doc1, doc2, n) :
     shared_words = set(word1_count.keys()).intersection(set(word2_count.keys()))
 
     # Count occurrence of shared n-grams
-    shared_words_sum = sum([word1_count[word] * word2_count[word] for word in shared_words])
+    shared_words_sum = sum([word1_count[word] + word2_count[word] for word in shared_words])
 
     norm1 = np.linalg.norm(np.asarray(list(word1_count.values())))
     norm2 = np.linalg.norm(np.asarray(list(word2_count.values())))
