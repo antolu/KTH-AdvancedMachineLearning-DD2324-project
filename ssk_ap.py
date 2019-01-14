@@ -78,38 +78,43 @@ def count_occurrences(doc, n) :
     cnt = Counter(ngrams)
 
     return cnt
-    
 
-def ssk_ap(doc1, doc2, base, l, n, C=1) :
-    """
-    An approximation of the SSK kernel
+class SSK_AP() :
 
-    Parameters
-    ----------
-    doc1 : string
-        The first document
-    doc2 : string
-        The second document
-    base : list(string)
-        A list of n-grams that is the orthogonal base for the kernel
-    l : int
-        The decay value (lambda)
-    n : int
-        The n in SSK (should be the same length as the n-grams)
-    C : double
-        Normalizing constant (?)
+    def __init__(self, base, l) :
+        self.base = base
+        self.l = l
 
-    Returns
-    -------
-    A kernel entry for doc1, doc2
-    """
+    def ssk_ap(self, doc1, doc2, n) :
+        """
+        An approximation of the SSK kernel
 
-    kernel = 0
+        Parameters
+        ----------
+        doc1 : string
+            The first document
+        doc2 : string
+            The second document
+        base : list(string)
+            A list of n-grams that is the orthogonal base for the kernel
+        l : int
+            The decay value (lambda)
+        n : int
+            The n in SSK (should be the same length as the n-grams)
+        C : double
+            Normalizing constant (?)
 
-    ssk = SSK(n, l, 10, doc1, doc2)
+        Returns
+        -------
+        A kernel entry for doc1, doc2
+        """
 
-    for s in base :
-        kernel += ssk.k(doc1, s, n) * ssk.k(doc2, s, n)
+        kernel = 0
 
-    return 1/C * kernel
+        ssk = SSK(n, self.l, 10, doc1, doc2)
+
+        for s in self.base :
+            kernel += ssk.k(doc1, s, n) * ssk.k(doc2, s, n)
+
+        return kernel
 

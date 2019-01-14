@@ -3,6 +3,8 @@ import math as m
 from collections import Counter
 from scipy.sparse import csr_matrix
 from nltk.tokenize import word_tokenize
+from ssk_ap import SSK_AP, get_features, count_occurrences
+from ssk import SSK
 import re
 
 regex = re.compile(r"\s")
@@ -96,7 +98,7 @@ def wk(doc1, doc2, n) :
     return similarity
 
 
-def compute_matrix(documents, kernel='ngk', n=2) :
+def compute_matrix(documents, kernel="ngk", n=2, x=100, l=0.2) :
     """
     Computes the kernel matrix of a list of documents.
 
@@ -108,6 +110,10 @@ def compute_matrix(documents, kernel='ngk', n=2) :
         The kernel function to be used as similarity measure for the kernel matrix.
     n : int
         The n used in each kernel. n-grams, ssk with n-characters etc.
+    x : int 
+        Number of n-grams in ssk_ap
+    l : double
+        The decay factor
     """
 
     # Check input arguments
@@ -117,6 +123,10 @@ def compute_matrix(documents, kernel='ngk', n=2) :
         kernel = ngk
     elif kernel == "wk" :
         kernel = wk
+    elif kernel == "ssk_ap" :
+        base = get_features(documents, x, n)
+        ssk_ap = SSK_AP(base, l)
+        kernel = ssk_ap.ssk_ap
     else : 
         raise Exception("Kernel " + kernel + " is not a valid kernel")
 
@@ -131,6 +141,7 @@ def compute_matrix(documents, kernel='ngk', n=2) :
 
     for n1 in range(N) :
         for n2 in range(N) :
+            print(str(n1) + str(n2))
             if n2 < n1 :
                 continue
             val = kernel(documents[n1], documents[n2], n)
