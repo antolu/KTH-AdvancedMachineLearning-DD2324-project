@@ -80,6 +80,9 @@ def count_occurrences(doc, n) :
     return cnt
 
 class SSK_AP() :
+    """
+    Approximation of the SSK kernel
+    """
 
     def __init__(self, base, l) :
         self.base = base
@@ -117,4 +120,6 @@ class SSK_AP() :
             kernel += ssk.k(doc1, s, n) * ssk.k(doc2, s, n)
 
         return kernel
+
+
 
