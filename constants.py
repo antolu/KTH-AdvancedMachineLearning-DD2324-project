@@ -1,5 +1,5 @@
 
-NORM_DOC_LENGTH = 250
+NORM_DOC_LENGTH = 300
 MIN_DOC_LENGTH = 500
 
 # Document categories
