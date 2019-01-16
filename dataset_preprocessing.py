@@ -7,7 +7,7 @@ from constants import *
 stop_words = set(stopwords.words("english"))
 stop_words.update([".", ",", ">"])
 reg = re.compile(r"&lt;")
-regg = re.compile(r"'")
+regg = re.compile(r"*['´`\"]")
 
 def trim(s) :
     """
