@@ -40,36 +40,44 @@ train_labels = np.array(train_labels)
 
 test_features = vectorizer.transform(all_test).toarray()
 test_labels_name = (["acq"] * len(test_acq)) + (["corn"] * len(test_corn)) + (["crude"] * len(test_crude)) + (["earn"] * len(test_earn))
-test_labels = np.zeros((len(test_features), 4))
+test_labels_index = np.zeros((len(test_features)))
 
 counter = 0
-test_labels[0:len(test_acq),0] = 1; counter += len(test_acq)
-test_labels[counter:counter+len(test_corn), 1] = 1; counter += len(test_corn)
-test_labels[counter:counter+len(test_crude), 2] = 1; counter += len(test_crude)
-test_labels[counter:counter+len(test_earn),3] = 1
+test_labels_index[0:len(test_acq)] = 0; counter += len(test_acq)
+test_labels_index[counter:counter+len(test_corn)] = 1; counter += len(test_corn)
+test_labels_index[counter:counter+len(test_crude)] = 2; counter += len(test_crude)
+test_labels_index[counter:counter+len(test_earn)] = 3
 
-test_labels = np.array(test_labels)
+test_labels_index = np.array(test_labels_index)
 
 model = Sequential()
-model.add(layers.Dense(3000, input_dim=len(vectorizer.vocabulary_), activation='relu'))
-model.add(layers.Dense(1500, activation='relu'))
-model.add(layers.Dense(500, activation='relu'))
+model.add(layers.Dense(200, input_dim=len(vectorizer.vocabulary_), activation='relu'))
+model.add(layers.Dense(100, activation='relu'))
+model.add(layers.Dense(50, activation='relu'))
 model.add(layers.Dense(4, activation='sigmoid'))
 model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
 
-history = model.fit(train_features, train_labels, epochs=10, verbose=True, batch_size=50)
+history = model.fit(train_features, train_labels, epochs=200, verbose=True, batch_size=50)
 
-predictions = model.predict(test_features)
+prediction_raw = model.predict(test_features)
+prediction_index = np.argmax(prediction_raw, axis=1)
 
-prediction_indices = np.argmax(predictions, axis=1)
-final_predictions = index_to_category[prediction_indices]
+f1 = f1_score(test_labels_index, prediction_index,  average=None)
+precision = precision_score(test_labels_index, prediction_index, average=None)
+recall = recall_score(test_labels_index, prediction_index, average=None)
 
-test_labels_index = np.zeros(len(test_labels))
-for i in range(len(test_labels)):
-    test_labels_index[i] = np.argmax(test_labels[i])
-
-f1 = f1_score(test_labels_index, prediction_indices, average='micro')
-# precision = precision_score(test_labels_index, predictions,[0],average='micro')
-# recall = recall_score(test_labels_index, predictions,[0], average='micro')
-print(f1)
-print(np.size(np.where(np.array(final_predictions) == np.array(test_labels_name))) / len(final_predictions))
+print("""
+################## RESULTS ###################
+CATEGORY        F1      Precision       Recall
+----------------------------------------------
+     ACQ        {:.4f}  {:.4f}          {:.4f}
+    CORN        {:.4f}  {:.4f}          {:.4f}
+   CRUDE        {:.4f}  {:.4f}          {:.4f}
+    EARN        {:.4f}  {:.4f}          {:.4f}
+""".format(
+        f1[0], precision[0], recall[0],
+        f1[1], precision[1], recall[1],
+        f1[2], precision[2], recall[2],
+        f1[3], precision[3], recall[3]
+    )
+)
