@@ -53,7 +53,7 @@ double kp(std::string s, std::string t, const double & l, const int & n) {
     return kp_res + kb_res;
 }
 
-double ssk(std::string s, std::string t, const double & l, const int & n) {
+double ssk(const std::string s, const std::string t, const double & l, const int & n) {
     if (n > std::min(s.size(), t.size()))
         return 0;
 
