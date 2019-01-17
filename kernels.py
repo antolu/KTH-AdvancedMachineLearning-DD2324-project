@@ -3,8 +3,9 @@ import math as m
 from collections import Counter
 from scipy.sparse import csr_matrix
 import re
+import ssk
 
-regex = re.compile(r"*\s")
+# regex = re.compile(r"*\s")
 
 def ngk(doc1, doc2, n) : 
     """
@@ -72,7 +73,7 @@ def compute_matrix(documents, kernel='ngk', n=2) :
     if kernel == "ngk" :
         kernel = ngk
     elif kernel == "ssk" :
-        kernel = ngk
+        kernel = ssk.SSK
     elif kernel == "bwk" :
         kernel = ngk
     else : 
@@ -96,5 +97,75 @@ def compute_matrix(documents, kernel='ngk', n=2) :
             kernel_matrix[n1, n2] = val
             kernel_matrix[n2, n1] = val
 
+    for n1 in range(N) : 
+        for n2 in range(N) :
+            if n2 <= n1 :
+                continue
+            kernel_matrix[n1, n2] = kernel_matrix[n1, n2] / m.sqrt(kernel_matrix[n1, n1] * kernel_matrix[n2, n2])
+            kernel_matrix[n2, n1] = kernel_matrix[n2, n1] / m.sqrt(kernel_matrix[n1, n1] * kernel_matrix[n2, n2])
+
+    # Normalize diagonal
+    for n in range(N) : 
+         kernel_matrix[n, n] =  kernel_matrix[n, n] /  kernel_matrix[n, n]
+
     return kernel_matrix
 
+def compute(documents, l, n=2) :
+
+    # Compute the actual matrix (symmetric)
+    N = len(documents)
+
+    kernel_matrix = np.zeros((N, N))
+
+    for n1 in range(N) :
+        for n2 in range(N) :
+            if n2 < n1 :
+                continue
+            print(n1, " ", n2)
+            print(documents[n1])
+            print(documents[n2])
+
+            val = ssk.SSK(str(documents[n1]), str(documents[n2]), l, n)
+
+            kernel_matrix[n1, n2] = val
+            kernel_matrix[n2, n1] = val
+
+    for n1 in range(N) : 
+        for n2 in range(N) :
+            if n2 <= n1 :
+                continue
+            kernel_matrix[n1, n2] = kernel_matrix[n1, n2] / m.sqrt(kernel_matrix[n1, n1] * kernel_matrix[n2, n2])
+            kernel_matrix[n2, n1] = kernel_matrix[n2, n1] / m.sqrt(kernel_matrix[n1, n1] * kernel_matrix[n2, n2])
+
+    # Normalize diagonal
+    for n in range(N) : 
+         kernel_matrix[n, n] =  kernel_matrix[n, n] /  kernel_matrix[n, n]
+
+    return kernel_matrix
+
+def compute_assymmetric(train, test, traintrain, l, n=2) :
+
+    # Compute the actual matrix (symmetric)
+    N1 = len(train)
+    N2 = len(test)
+
+    kernel_matrix = np.zeros((N1, N2))
+
+    testtest = list()
+    for i in range(N2) :
+        testtest
+    np.save("testtest",testtest)
+
+    for n1 in range(N1) :
+        for n2 in range(N2) :
+            # if n2 < n1 :
+            #     continue
+            print(n1, " ", n2)
+            print(train[n1])
+            print(test[n2])
+
+            val = ssk.SSK(str(train[n1]), str(test[n2]), l, n)
+
+            kernel_matrix[n1, n2] = val / m.sqrt(traintrain[n1, n1] * testtest[n2, n2])
+
+    return kernel_matrix
