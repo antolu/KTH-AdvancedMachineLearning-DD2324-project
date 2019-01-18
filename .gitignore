@@ -116,3 +116,4 @@ gcloud/*
 *.pyx
 
 ssk_matrix
+*.npy
