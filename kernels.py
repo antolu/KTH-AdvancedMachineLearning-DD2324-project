@@ -130,6 +130,23 @@ def compute(documents, l, n=2) :
             kernel_matrix[n1, n2] = val
             kernel_matrix[n2, n1] = val
 
+    return kernel_matrix
+
+def make_symmetric(kernel_matrix) :
+    N = kernel_matrix.shape[0]
+    
+    for n1 in range(N) :
+        for n2 in range(N) :
+            if n2 < n1 :
+                continue
+
+            kernel_matrix[n1, n2] = kernel_matrix[n2, n1]
+
+    return kernel_matrix
+
+def normalize_symmetric(kernel_matrix) : 
+    N = kernel_matrix.shape[0]
+
     for n1 in range(N) : 
         for n2 in range(N) :
             if n2 <= n1 :
@@ -141,20 +158,33 @@ def compute(documents, l, n=2) :
     for n in range(N) : 
          kernel_matrix[n, n] =  kernel_matrix[n, n] /  kernel_matrix[n, n]
 
+def normalize_asymmetric(kernel_matrix, traintrain, testtest) :
+    N1 = traintrain.shape[0]
+    N2 = testtest.shape[0]
+
+    for n1 in range(N1) : 
+        for n2 in range(N2) : 
+            kernel_matrix[n1, n2] = kernel_matrix[n1, n2] / m.sqrt(traintrain[n1, n1] * testtest[n2, n2])
+
     return kernel_matrix
 
-def compute_assymmetric(train, test, traintrain, l, n=2) :
+
+def get_diagonal(docs, l, n) :
+    N = len(docs)
+
+    ret = np.zeros((N,N))
+
+    for n in range(N) : 
+        ret[n,n] = ssk.SSK(str(docs[n]), str(docs[n]), l, n)
+    return ret
+
+def compute_assymmetric(train, test, testtest, l, n=2) :
 
     # Compute the actual matrix (symmetric)
     N1 = len(train)
     N2 = len(test)
 
     kernel_matrix = np.zeros((N1, N2))
-
-    testtest = list()
-    for i in range(N2) :
-        testtest
-    np.save("testtest",testtest)
 
     for n1 in range(N1) :
         for n2 in range(N2) :
@@ -166,6 +196,6 @@ def compute_assymmetric(train, test, traintrain, l, n=2) :
 
             val = ssk.SSK(str(train[n1]), str(test[n2]), l, n)
 
-            kernel_matrix[n1, n2] = val / m.sqrt(traintrain[n1, n1] * testtest[n2, n2])
+            kernel_matrix[n1, n2] = val
 
     return kernel_matrix
