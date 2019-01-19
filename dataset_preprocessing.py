@@ -67,8 +67,10 @@ def preprocess(docs, normalize=False) :
                 s = trim(d)
                 if normalize :
                     if len(s) < NORM_DOC_LENGTH :
-                        raise Exception("Document is too short: " + set_ + " " + cat + ". Length: " + str(len(s)))
-                    s = s[:NORM_DOC_LENGTH]
+                        # raise Exception("Document is too short: " + set_ + " " + cat + ". Length: " + str(len(s)))
+                        s = s
+                    else:
+                        s = s[:NORM_DOC_LENGTH]
                 l.append(s)
 
             trimmed[set_][cat] = l
