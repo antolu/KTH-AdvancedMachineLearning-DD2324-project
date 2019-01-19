@@ -140,7 +140,7 @@ def make_symmetric(kernel_matrix) :
             if n2 < n1 :
                 continue
 
-            kernel_matrix[n1, n2] = kernel_matrix[n2, n1]
+            kernel_matrix[n2, n1] = kernel_matrix[n1, n2]
 
     return kernel_matrix
 
