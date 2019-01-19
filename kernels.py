@@ -35,10 +35,10 @@ def ngk(doc1, doc2, n) :
 
     # Extract all the n-grams
     ngrams1 = list()
-    for i in range(len(doc1)-n) :
+    for i in np.arange(-n,len(doc1)):
         ngrams1.append(doc1[i:i+n])
     ngrams2 = list()
-    for i in range(len(doc2)-n) :
+    for i in np.arange(-n,len(doc2)):
         ngrams2.append(doc2[i:i+n])
 
     # Count n-grams
@@ -98,7 +98,7 @@ def wk(doc1, doc2, n) :
 
     return similarity
 
-def compute_matrix(documents, kernel="ngk", n=2, x=100, l=0.2) :
+def compute_matrix(documents, kernel="ngk", n=6, x=100, l=0.2) :
     """
     Computes the kernel matrix of a list of documents.
 
@@ -166,7 +166,7 @@ def compute_matrix(documents, kernel="ngk", n=2, x=100, l=0.2) :
     return kernel_matrix
 
 
-def compute_nonsym_matrix(doclist1, doclist2, kernel="ngk", n=2, x=100, l=0.2) :
+def compute_nonsym_matrix(doclist1, doclist2, kernel="ngk", n=6, x=100, l=0.2) :
     """
     Computes the kernel matrix of a list of documents.
 

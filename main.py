@@ -65,9 +65,9 @@ if __name__ == "__main__":
             all_train.append(l[i])
             train_labels.append(cat)
 
-    mat = compute_matrix(all_train, kernel="wk")
-    np.save("results/wktrain",mat)
-    np.save("results/wktrainlabels", train_labels)
+    mat = compute_matrix(all_train, kernel="ngk")
+    np.save("results/ngktrain6",mat)
+    np.save("results/ngktrainlabels6", train_labels)
 
     all_test = []
     test_labels = []
@@ -80,6 +80,6 @@ if __name__ == "__main__":
             test_labels.append(cat)
 
     mat = compute_nonsym_matrix(all_test, all_train, kernel="wk")
-    np.save("results/wktest", mat)
-    np.save("results/wktestlabels", test_labels)
+    np.save("results/ngktest6", mat)
+    np.save("results/ngktestlabels6", test_labels)
     
