@@ -6,6 +6,7 @@ from nltk.tokenize import word_tokenize
 from ssk_ap import SSK_AP, get_features, count_occurrences
 from SSK_Kernel import SSK
 import re
+from WK import WK
 
 regex = re.compile(r"\s")
 
@@ -122,7 +123,8 @@ def compute_matrix(documents, kernel="ngk", n=2, x=100, l=0.2) :
         ssk = SSK(n, l, x, "", "")
         kernel = ssk.k
     elif kernel == "wk" :
-        kernel = wk
+        bow = WK(documents)
+        kernel = bow.kernel_function
     elif kernel == "ssk_ap" :
         base = get_features(documents, x, n)
         ssk_ap = SSK_AP(base, l)
@@ -143,6 +145,7 @@ def compute_matrix(documents, kernel="ngk", n=2, x=100, l=0.2) :
         for n2 in range(N) :
             if n2 < n1 :
                 continue
+            
             val = kernel(documents[n1], documents[n2], n)
 
             kernel_matrix[n1, n2] = val
@@ -158,7 +161,7 @@ def compute_matrix(documents, kernel="ngk", n=2, x=100, l=0.2) :
 
     # Normalize diagonal
     for n in range(N) :
-         kernel_matrix[n, n] =  kernel_matrix[n, n] /  kernel_matrix[n, n]
+        kernel_matrix[n, n] = 1.0
 
     return kernel_matrix
 
@@ -214,4 +217,3 @@ def compute_nonsym_matrix(doclist1, doclist2, kernel="ngk", n=2, x=100, l=0.2) :
 
 
     return kernel_matrix
-
