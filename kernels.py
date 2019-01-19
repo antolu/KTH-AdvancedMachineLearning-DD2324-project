@@ -191,7 +191,7 @@ def compute_nonsym_matrix(doclist1, doclist2, kernel="ngk", n=2, x=100, l=0.2) :
         ssk = SSK(n, l, x, "", "")
         kernel = ssk.k
     elif kernel == "wk" :
-        bow = WK(doclist1)      # Assuming doclist1 is train data
+        bow = WK(doclist2)      # Assuming doclist1 is train data
         kernel = bow.kernel_function
     elif kernel == "ssk_ap" :
         base = get_features(documents, x, n)

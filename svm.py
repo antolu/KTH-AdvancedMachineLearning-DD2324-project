@@ -29,7 +29,7 @@ class TextClassifier:
         if ((ker_type == "ssk") or (ker_type == "ngk")):
             clf = SVC(kernel = "precomputed")
         elif (ker_type == "wk"):
-            clf = LinearSVC(kernel="precomputed")
+            clf = SVC(kernel="precomputed")
         else:
             print("No valid kernel defined.")
 
@@ -38,8 +38,9 @@ class TextClassifier:
         clf.fit(self.train_matrix, self.train_labels)
         y_pred = clf.predict(self.test_matrix)
 
+        print(y_pred)
 
-        precision,recall,f1,supp = skmet.precision_recall_fscore_support(y_true=self.test_labels, y_pred=y_pred)
+        precision,recall,f1,supp = skmet.precision_recall_fscore_support(y_true=self.test_labels, y_pred=y_pred, average=None)
 
         return f1,precision,recall
 
@@ -49,15 +50,21 @@ class TextClassifier:
 Loads relevant test/train-kernel matrices and their respective class labels
 '''
 
-test = np.load("results/ngk_testmatrix.npy")
-train = np.load("results/ngk_trainmatrix.npy")
-test_labels = np.load("results/ngk_testclasses.npy")
-train_labels = np.load("results/ngk_trainclasses.npy")
+# test = np.load("results/ngk_testmatrix.npy")
+# train = np.load("results/ngk_trainmatrix.npy")
+# test_labels = np.load("results/ngk_testclasses.npy")
+# train_labels = np.load("results/ngk_trainclasses.npy")
 
+test = np.load("results/ngktest6.npy")
+train = np.load("results/ngktrain6.npy")
+test_labels = np.load("results/ngktestlabels6.npy")
+train_labels = np.load("results/ngktrainlabels6.npy")
+
+#print(test.shape, train.shape, test_labels.shape, train_labels.shape)
 
 classifier = TextClassifier(train, test, train_labels, test_labels)
 
-f1_out,prec_out,recall_out = classifier.SVM(ker_type="ngk")
+f1_out,prec_out,recall_out = classifier.SVM(ker_type="wk")
 
 
 print(f1_out)
