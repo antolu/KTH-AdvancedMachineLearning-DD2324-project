@@ -57,10 +57,10 @@ Loads relevant test/train-kernel matrices and their respective class labels
 # test_labels = np.load("results/ngk_testclasses.npy")
 # train_labels = np.load("results/ngk_trainclasses.npy")
 
-test = np.load("results/ngktest6.npy")
-train = np.load("results/ngktrain6.npy")
-test_labels = np.load("results/ngktestlabels6.npy")
-train_labels = np.load("results/ngktrainlabels6.npy")
+test = np.load("results/ngktest5.npy")
+train = np.load("results/ngktrain5.npy")
+test_labels = np.load("results/ngktestlabels5.npy")
+train_labels = np.load("results/ngktrainlabels5.npy")
 
 #print(test.shape, train.shape, test_labels.shape, train_labels.shape)
 # test = np.load("results/sskap_testmatrix.npy")
@@ -74,7 +74,7 @@ train_labels = np.load("results/ngktrainlabels6.npy")
 #     train_labels.append(item.decode('UTF-8'))
 
 classifier = TextClassifier(train, test, train_labels, test_labels)
-f1_out,prec_out,recall_out = classifier.SVM(ker_type="ngk")
+prec_out,recall_out,f1_out = classifier.SVM(ker_type="ngk")
 print("Category:", CATEGORIES)
 print("F1:",f1_out)
 print("Prec:",prec_out)
