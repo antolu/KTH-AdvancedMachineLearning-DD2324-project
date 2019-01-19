@@ -158,6 +158,8 @@ def normalize_symmetric(kernel_matrix) :
     for n in range(N) : 
          kernel_matrix[n, n] =  kernel_matrix[n, n] /  kernel_matrix[n, n]
 
+    return kernel_matrix
+
 def normalize_asymmetric(kernel_matrix, traintrain, testtest) :
     N1 = traintrain.shape[0]
     N2 = testtest.shape[0]
