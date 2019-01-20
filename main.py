@@ -79,7 +79,7 @@ if __name__ == "__main__":
             all_test.append(l[i])
             test_labels.append(cat)
 
-    mat = compute_nonsym_matrix(all_test, all_train, kernel="wk")
+    mat = compute_nonsym_matrix(all_test, all_train, kernel="ngk")
     np.save("results/ngktest6", mat)
     np.save("results/ngktestlabels6", test_labels)
     
